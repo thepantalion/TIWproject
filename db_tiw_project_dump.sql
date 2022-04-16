@@ -101,6 +101,10 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (1,'thepantalion','filippo.pantaleone@mail.polimi.com','08032000'),(2,'chiaraperuzzi','chiara.peruzzi@mail.polimi.it','07051999'),(3,'ellie_spoken','elisa.parlati@mail.polimi.it','melecutugno99'),(4,'gjus3ppe','giuseppe.marchesani@mail.polimi.it','Giuseppe99'),(5,'luca.nicoli99','luca.nicoli@mail.polimi.it','@tato99'),(6,'michelangelo_mascari','michelangelo.mascari@mail.polimi.it','MostroDiFirenze'),(7,'fedeorla99','federico.orlando@unimi.it','traditore99'),(8,'naldi.valentina','valentina.naldi@mail.polimi.it','melecutugno99');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'db_tiw_project'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -111,4 +115,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-16 17:00:16
+-- Dump completed on 2022-04-16 17:10:48
