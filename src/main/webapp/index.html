@@ -10,7 +10,7 @@
     <form action = "SignIn" method="POST">
         Username: <input type="text" name="username" required> <br>
         Password: <input type="password" name="password" required> <br>
-        <input type="submit" value="Sign in!">
+        <input type="submit" value="Sign in">
         <p th:text=" ${errorMessage}"></p>
     </form>
 
@@ -18,7 +18,9 @@
         Email: <input type="text" name="email" required> <br>
         Username: <input type="text" name="username" required> <br>
         Password: <input type="password" name="password" required> <br>
+        Repeat Password: <input type="password" name="repeatPassword" required> <br>
         <input type="submit" value="Sign up">
+        <p th:text=" ${errorMessage}"></p>
     </form>
 
 </body>
