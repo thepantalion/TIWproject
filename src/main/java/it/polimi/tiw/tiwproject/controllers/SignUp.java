@@ -70,8 +70,8 @@ public class SignUp extends HttpServlet {
         try {
             userDAO.createUser(email, username, password);
         } catch (SQLException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to add user :(");
-            return;
+            if(e.getMessage().contains("Duplicate")) sendError("The specified username is already registered", request, response);
+            else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
         // return the user to the right view
@@ -84,7 +84,7 @@ public class SignUp extends HttpServlet {
     private void sendError(String error, HttpServletRequest request, HttpServletResponse response){
         ServletContext servletContext = getServletContext();
         final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
-        webContext.setVariable("errorMessage", error);
+        webContext.setVariable("signUpErrorMessage", error);
         String path = "/index.html";
 
         try {

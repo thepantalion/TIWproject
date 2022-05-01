@@ -69,7 +69,7 @@ public class SignIn extends HttpServlet {
         if(user == null) {
             ServletContext servletContext = getServletContext();
             final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
-            webContext.setVariable("errorMessage", "Incorrect username or password");
+            webContext.setVariable("signInErrorMessage", "Incorrect username or password");
             path = "/index.html";
             templateEngine.process(path, webContext, response.getWriter());
         } else {
@@ -83,7 +83,7 @@ public class SignIn extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         doPost(req, resp);
     }
 }
