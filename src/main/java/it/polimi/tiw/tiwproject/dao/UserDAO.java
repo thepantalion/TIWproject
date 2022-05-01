@@ -3,6 +3,7 @@ package it.polimi.tiw.tiwproject.dao;
 import it.polimi.tiw.tiwproject.beans.User;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class UserDAO {
     private final Connection connection;
@@ -39,5 +40,14 @@ public class UserDAO {
             preparedStatement.setString(3, password);
             preparedStatement.executeUpdate();
         }
+    }
+
+    public ArrayList<User> getAllUsers(User creator) throws SQLException {
+        String query = "SELECT * FROM db_tiw_project.user WHERE username <> ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, creator.getUsername());
+            preparedStatement.executeUpdate();
+        }
+        return new ArrayList<>();
     }
 }
