@@ -43,11 +43,26 @@ public class UserDAO {
     }
 
     public ArrayList<User> getAllUsers(User creator) throws SQLException {
-        String query = "SELECT * FROM db_tiw_project.user WHERE username <> ?";
+        String query = "SELECT idUser, username, email FROM db_tiw_project.user WHERE username <> ?";
+        ArrayList<User> userList = new ArrayList<>();
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, creator.getUsername());
-            preparedStatement.executeUpdate();
+
+            try (ResultSet result = preparedStatement.executeQuery()){
+                if(!result.isBeforeFirst()) return userList;
+                else {
+                    while(result.next()){
+                        User user = new User();
+                        user.setId(result.getInt("idUser"));
+                        user.setUsername(result.getString("username"));
+                        user.setEmail(result.getString("email"));
+                        userList.add(user);
+                    }
+                }
+            }
         }
-        return new ArrayList<>();
+
+        return userList;
     }
 }

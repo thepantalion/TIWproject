@@ -2,14 +2,17 @@ package it.polimi.tiw.tiwproject.beans;
 
 import jdk.jfr.Timestamp;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.util.Date;
 
 public class Meeting {
     private int id;
     private int idCreator;
+    private String creator;
     private String title;
     private Date date;
+    private Time time;
     private int duration;
     private int numberOfParticipants;
 
@@ -59,5 +62,21 @@ public class Meeting {
 
     public void setNumberOfParticipants(int numberOfParticipants) {
         this.numberOfParticipants = numberOfParticipants;
+    }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }
