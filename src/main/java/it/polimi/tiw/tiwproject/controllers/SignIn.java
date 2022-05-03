@@ -74,16 +74,12 @@ public class SignIn extends HttpServlet {
             templateEngine.process(path, webContext, response.getWriter());
         } else {
             request.getSession().setAttribute("user", user);
-            path = "/WEB-INF/home.html";
-            ServletContext servletContext = getServletContext();
-            final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
-            templateEngine.process(path, webContext, response.getWriter());
+            response.sendRedirect(getServletContext().getContextPath() + "/Home");
         }
 
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        doPost(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doPost(request, response);
     }
 }

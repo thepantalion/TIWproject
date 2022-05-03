@@ -11,6 +11,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@WebServlet("/Home")
 public class GoToHome extends HttpServlet {
     private Connection connection = null;
     private TemplateEngine templateEngine;
@@ -61,16 +63,17 @@ public class GoToHome extends HttpServlet {
             meetingsInvited = meetingDAO.meetingsInvited(user);
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover meeting");
+            e.printStackTrace();
             return;
         }
 
         String path = "/WEB-INF/home.html";
         ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("user", user);
-        ctx.setVariable("meetingsCreated", meetingsCreated);
-        ctx.setVariable("meetingsInvited", meetingsInvited);
-        templateEngine.process(path, ctx, response.getWriter());
+        final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
+        webContext.setVariable("user", user);
+        webContext.setVariable("meetingsCreated", meetingsCreated);
+        webContext.setVariable("meetingsInvited", meetingsInvited);
+        templateEngine.process(path, webContext, response.getWriter());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

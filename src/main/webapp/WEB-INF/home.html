@@ -1,12 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>MeetMe - Home</title>
 </head>
+
 <body>
-<p>
-    Welcome!
-</p>
+    <div>
+        <a th:href="@{/Logout}">Logout</a>
+    </div>
+    <h1>MeetMe - Homepage</h1>
+    <p th:text = "${'Welcome back, ' + session.user.username + '!'}">Welcome back, [placeholder]!</p>
+
+    <p th:text="${meetingsCreated.isEmpty()} ? 'You have not created any meeting yet!' : 'Meetings you have created'"></p>
+    <div th:unless="${meetingsCreated.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "meeting : ${meetingsCreated}" >
+                <td th:text = "${meeting.title}" >placeholder</td>
+                <td th:text = "${meeting.date}" >2000-01-01</td>
+                <td th:text = "${meeting.time}" >09:41</td>
+                <td th:text = "${meeting.duration} + 'min'" >120m</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p th:text="${meetingsInvited.isEmpty()} ? 'You have not been invited to any meeting yet!' : 'Meetings you are invited to'"></p>
+    <div th:unless="${meetingsInvited.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Host</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "meeting : ${meetingsInvited}" >
+                <td th:text = "${meeting.title}" >placeholder</td>
+                <td th:text = "${meeting.date}" >2000-01-01</td>
+                <td th:text = "${meeting.time}" >09:41</td>
+                <td th:text = "${meeting.duration} + 'min'" >120m</td>
+                <td th:text = "${meeting.creator}" >chiaraperuzzi</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <p>Use the form below to create a meeting</p>
+        <form action="#" th:action="@{/CreateMeeting}" method="POST">
+            <fieldset>
+                <p>
+                    Title: <input type="text" name="title" required />
+                </p>
+                <p>
+                    Date: <input type="date" name="date"
+                                 th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                                 placeholder="yyyy-mm-dd" required />
+                </p>
+                <p>
+                    Start time: <input type="time" id="time" name="time" required>
+                </p>
+                <p>
+                    Duration (in minutes): <input type="number" name="duration" min=1 required />
+                </p>
+                <p>
+                    Number of participants: <input type="number" name="duration" min=2 required />
+                </p>
+
+                <p th:text=" ${meetingFormError}"></p>
+                <input type="submit" name="Create Meeting">
+            </fieldset>
+        </form>
+    </div>
+
 </body>
 </html>

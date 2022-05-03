@@ -1,9 +1,6 @@
 package it.polimi.tiw.tiwproject.beans;
 
-import jdk.jfr.Timestamp;
-
 import java.sql.Time;
-import java.time.Duration;
 import java.util.Date;
 
 public class Meeting {

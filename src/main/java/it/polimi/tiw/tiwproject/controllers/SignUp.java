@@ -48,7 +48,7 @@ public class SignUp extends HttpServlet {
         email = StringEscapeUtils.escapeJava(request.getParameter("email"));
         username = StringEscapeUtils.escapeJava(request.getParameter("username"));
         password = StringEscapeUtils.escapeJava(request.getParameter("password"));
-        passwordRepeated = StringEscapeUtils.escapeJava(request.getParameter("password"));
+        passwordRepeated = StringEscapeUtils.escapeJava(request.getParameter("repeatPassword"));
 
         if (email == null || username == null || password == null || passwordRepeated == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
@@ -60,7 +60,7 @@ public class SignUp extends HttpServlet {
             return;
         }
 
-        if (!password.equals(passwordRepeated)){
+        if (!password.equals(passwordRepeated)) {
             sendError("The two passwords do not match", request, response);
             return;
         }
@@ -70,7 +70,8 @@ public class SignUp extends HttpServlet {
         try {
             userDAO.createUser(email, username, password);
         } catch (SQLException e) {
-            if(e.getMessage().contains("Duplicate")) sendError("The specified username is already registered", request, response);
+            if (e.getMessage().contains("Duplicate"))
+                sendError("The specified username and/or email is already registered", request, response);
             else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
@@ -79,6 +80,10 @@ public class SignUp extends HttpServlet {
         String path = ctxpath + "/index.html";
         response.sendRedirect(path);
 
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        doPost(request, response);
     }
 
     private void sendError(String error, HttpServletRequest request, HttpServletResponse response){

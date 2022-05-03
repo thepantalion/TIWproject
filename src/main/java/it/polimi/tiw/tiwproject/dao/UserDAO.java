@@ -50,15 +50,12 @@ public class UserDAO {
             preparedStatement.setString(1, creator.getUsername());
 
             try (ResultSet result = preparedStatement.executeQuery()){
-                if(!result.isBeforeFirst()) return userList;
-                else {
-                    while(result.next()){
-                        User user = new User();
-                        user.setId(result.getInt("idUser"));
-                        user.setUsername(result.getString("username"));
-                        user.setEmail(result.getString("email"));
-                        userList.add(user);
-                    }
+                while(result.next()){
+                    User user = new User();
+                    user.setId(result.getInt("idUser"));
+                    user.setUsername(result.getString("username"));
+                    user.setEmail(result.getString("email"));
+                    userList.add(user);
                 }
             }
         }
