@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -40,18 +41,20 @@ public class SignUp extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username;
         String email;
+        String username;
         String password;
         String passwordRepeated;
 
-        email = StringEscapeUtils.escapeJava(request.getParameter("email"));
-        username = StringEscapeUtils.escapeJava(request.getParameter("username"));
-        password = StringEscapeUtils.escapeJava(request.getParameter("password"));
-        passwordRepeated = StringEscapeUtils.escapeJava(request.getParameter("repeatPassword"));
+        try {
+            email = StringEscapeUtils.escapeJava(request.getParameter("email"));
+            username = StringEscapeUtils.escapeJava(request.getParameter("username"));
+            password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+            passwordRepeated = StringEscapeUtils.escapeJava(request.getParameter("repeatPassword"));
 
-        if (email == null || username == null || password == null || passwordRepeated == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+            if (email == null || username == null || password == null || passwordRepeated == null) throw new Exception();
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credential value");
             return;
         }
 
@@ -75,11 +78,8 @@ public class SignUp extends HttpServlet {
             else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
-        // return the user to the right view
-        String ctxpath = getServletContext().getContextPath();
-        String path = ctxpath + "/index.html";
+        String path = getServletContext().getContextPath() + "/index.html";
         response.sendRedirect(path);
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
