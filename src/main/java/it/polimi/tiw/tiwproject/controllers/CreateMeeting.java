@@ -3,6 +3,7 @@ package it.polimi.tiw.tiwproject.controllers;
 import it.polimi.tiw.tiwproject.utilities.ConnectionHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -18,6 +19,7 @@ import java.sql.Connection;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,31 +53,55 @@ public class CreateMeeting extends HttpServlet {
 
         String title;
         int duration;
-        Time time;
+        Time time = null;
         Date date;
         int numberOfParticipants;
 
         try {
             title = StringEscapeUtils.escapeJava(request.getParameter("title"));
             duration = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("duration")));
-            time = Time.valueOf(StringEscapeUtils.escapeJava(request.getParameter("time")));
+            time = new Time(new SimpleDateFormat("HH:mm").parse(StringEscapeUtils.escapeJava(request.getParameter("time"))).getTime());
             date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
             numberOfParticipants = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("numberOfParticipants")));
 
-            if (title == null || duration == 0 || time == null || date == null || numberOfParticipants == 0) throw new Exception();
+            if (title == null || duration == 0 || time == null || date == null || numberOfParticipants == 0 || title.isEmpty()) throw new Exception();
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
             return;
         }
 
-        if (title.isEmpty() || duration <= 0 || (date.equals(Calendar.getInstance().getTime()) && time.before(Calendar.getInstance().getTime()))
-                || date.before(Calendar.getInstance().getTime()) || numberOfParticipants < 1){
-
+        if (duration <= 0 || numberOfParticipants < 1){
+            sendError("The numbers entered are not correct.", request, response);
+            return;
         }
+
+        if (date.equals(Calendar.getInstance().getTime()) && time.before(Calendar.getInstance().getTime())){
+            sendError("The time entered is not correct.", request, response);
+            return;
+        }
+
+        if (date.before(Calendar.getInstance().getTime())){
+            sendError("The date entered is not correct.", request, response);
+            return;
+        }
+
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doPost(request, response);
+    }
+
+    private void sendError(String error, HttpServletRequest request, HttpServletResponse response){
+        ServletContext servletContext = getServletContext();
+        final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
+        webContext.setVariable("meetingErrorMessage", error);
+        String path = "/index.html";
+
+        try {
+            templateEngine.process(path, webContext, response.getWriter());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
