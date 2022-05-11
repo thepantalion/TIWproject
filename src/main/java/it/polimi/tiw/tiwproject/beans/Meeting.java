@@ -22,6 +22,10 @@ public class Meeting {
         this.numberOfParticipants = numberOfParticipants;
     }
 
+    public Meeting() {
+
+    }
+
     public int getId() {
         return id;
     }

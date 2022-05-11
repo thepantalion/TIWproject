@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MeetMe - Registry</title>
+</head>
+
+<body>
+<div>
+    <a th:href="@{/Home}">Go back to Home</a>
+</div>
+<h1>MeetMe - Registry</h1>
+<!-- printare le informazioni del meeting appena creato -->
+
+<div>
+    <p th:text = "'Please select up to ' + ${tempMeeting.getNumberOfParticipants()} + ' users.'"></p>
+    <!-- stampa il numero di utenti da selezionare, se sono troppi, mostra quanti ne deve togliere -->
+    <form action="#" th:action="@{/CreateMeeting}" method="POST">
+        <fieldset>
+            <div th:each="user : ${allUsers}">
+                <input type="checkbox" th:name="${user.username}" th:value="${user.username}" th:checked="checked"/>
+                <label th:for="${user.username}" th:text="${user.username}"> test</label>
+            </div>
+
+            <!-- <p th:text=" ${meetingFormError}"></p> -->
+            <input type="submit" name="Create Meeting">
+        </fieldset>
+    </form>
+</div>
+
+</body>
+</html>

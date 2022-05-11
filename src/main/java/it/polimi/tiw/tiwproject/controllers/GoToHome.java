@@ -49,9 +49,15 @@ public class GoToHome extends HttpServlet {
             return;
         }
 
+        String errorMessage = "";
+
         if (session.getAttribute("tempMeeting") != null) session.removeAttribute("tempMeeting");
         if (session.getAttribute("counter") != null) session.removeAttribute("counter");
         if (session.getAttribute("userList") != null) session.removeAttribute("userList");
+        if (session.getAttribute("errorMessage") != null) {
+            errorMessage = (String) session.getAttribute("errorMessage");
+            session.removeAttribute("errorMessage");
+        }
 
         User user = (User) session.getAttribute("user");
         MeetingDAO meetingDAO = new MeetingDAO(connection);
@@ -73,6 +79,7 @@ public class GoToHome extends HttpServlet {
         webContext.setVariable("user", user);
         webContext.setVariable("meetingsCreated", meetingsCreated);
         webContext.setVariable("meetingsInvited", meetingsInvited);
+        if(!errorMessage.isEmpty()) webContext.setVariable("meetingFormError", errorMessage);
         templateEngine.process(path, webContext, response.getWriter());
     }
 
