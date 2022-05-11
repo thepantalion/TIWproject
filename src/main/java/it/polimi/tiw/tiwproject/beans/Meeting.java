@@ -13,6 +13,15 @@ public class Meeting {
     private int duration;
     private int numberOfParticipants;
 
+    public Meeting(String creator, String title, Date date, Time time, int duration, int numberOfParticipants) {
+        this.creator = creator;
+        this.title = title;
+        this.date = date;
+        this.time = time;
+        this.duration = duration;
+        this.numberOfParticipants = numberOfParticipants;
+    }
+
     public int getId() {
         return id;
     }

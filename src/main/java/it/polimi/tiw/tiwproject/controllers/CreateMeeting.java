@@ -1,5 +1,8 @@
 package it.polimi.tiw.tiwproject.controllers;
 
+import it.polimi.tiw.tiwproject.beans.Meeting;
+import it.polimi.tiw.tiwproject.beans.User;
+import it.polimi.tiw.tiwproject.dao.UserDAO;
 import it.polimi.tiw.tiwproject.utilities.ConnectionHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
@@ -16,10 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -53,9 +58,11 @@ public class CreateMeeting extends HttpServlet {
 
         String title;
         int duration;
-        Time time = null;
+        Time time;
         Date date;
         int numberOfParticipants;
+
+        User user = (User) request.getSession().getAttribute("user");
 
         try {
             title = StringEscapeUtils.escapeJava(request.getParameter("title"));
@@ -64,7 +71,7 @@ public class CreateMeeting extends HttpServlet {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("date"));
             numberOfParticipants = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("numberOfParticipants")));
 
-            if (title == null || duration == 0 || time == null || date == null || numberOfParticipants == 0 || title.isEmpty()) throw new Exception();
+            if (title == null || duration == 0 || date == null || numberOfParticipants == 0 || title.isEmpty()) throw new Exception();
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
             return;
@@ -75,17 +82,31 @@ public class CreateMeeting extends HttpServlet {
             return;
         }
 
-        if (date.equals(Calendar.getInstance().getTime()) && time.before(Calendar.getInstance().getTime())){
-            sendError("The time entered is not correct.", request, response);
+        if ((date.equals(Calendar.getInstance().getTime()) && time.before(Calendar.getInstance().getTime()))
+                || date.before(Calendar.getInstance().getTime())){
+            sendError("You cannot enter a prior date to today.", request, response);
             return;
         }
 
-        if (date.before(Calendar.getInstance().getTime())){
-            sendError("The date entered is not correct.", request, response);
+        Meeting tempMeeting = new Meeting(user.getUsername(), title, date, time, duration, numberOfParticipants);
+        request.getSession().setAttribute("tempMeeting", tempMeeting);
+        request.getSession().setAttribute("counter", 0);
+        request.getSession().setAttribute("userList", new ArrayList<User>());
+
+        ArrayList<User> allUsers;
+        try {
+            allUsers = new UserDAO(connection).getAllUsers(user);
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "There was a problem with the database :(");
             return;
         }
 
-
+        String path = "/WEB-INF/registry.html";
+        ServletContext servletContext = getServletContext();
+        final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
+        webContext.setVariable("allUsers", allUsers);
+        webContext.setVariable("tempMeeting", tempMeeting);
+        templateEngine.process(path, webContext, response.getWriter());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
