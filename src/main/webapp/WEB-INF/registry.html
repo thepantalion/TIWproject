@@ -10,16 +10,24 @@
     <a th:href="@{/Home}">Go back to Home</a>
 </div>
 <h1>MeetMe - Registry</h1>
-<!-- printare le informazioni del meeting appena creato -->
+
+<div>
+    <h3>Meeting details:</h3>
+    <p th:text="'title: ' + ${tempMeeting.title}">sample</p>
+    <p th:text="'date: ' + ${tempMeeting.date.getYear() + 1900} +'-'+${tempMeeting.date.getMonth()}+'-'+${tempMeeting.date.getDay()}">2000-01-01</p>
+    <p th:text="'time: ' + ${tempMeeting.time}">15:30</p>
+    <p th:text="'duration: ' + ${tempMeeting.duration}">90min</p>
+    <p th:text="'maximum number of participants: ' + ${tempMeeting.numberOfParticipants}">14-05-2022</p>
+</div>
 
 <div>
     <p th:text = "'Please select up to ' + ${tempMeeting.getNumberOfParticipants()} + ' users.'"></p>
     <!-- stampa il numero di utenti da selezionare, se sono troppi, mostra quanti ne deve togliere -->
     <form action="#" th:action="@{/CreateMeeting}" method="POST">
         <fieldset>
-            <div th:each="user : ${allUsers}">
-                <input type="checkbox" th:name="${user.username}" th:value="${user.username}" th:checked="checked"/>
-                <label th:for="${user.username}" th:text="${user.username}"> test</label>
+            <div th:each="user : ${userMap}">
+                <input type="checkbox" th:name="${user.key}" th:value="${user.key}" th:checked="${userMap.get(user.key).get_2()}"/> <!-- th:checked="" -->
+                <label th:for="${user.key}" th:text="${user.key}"> test</label>
             </div>
 
             <!-- <p th:text=" ${meetingFormError}"></p> -->
