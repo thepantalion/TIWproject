@@ -4,6 +4,7 @@ import it.polimi.tiw.tiwproject.beans.User;
 import it.polimi.tiw.tiwproject.dao.UserDAO;
 import it.polimi.tiw.tiwproject.utilities.ConnectionHandler;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -60,6 +61,11 @@ public class SignUp extends HttpServlet {
 
         if (email.isEmpty() || username.isEmpty() || password.isEmpty() || passwordRepeated.isEmpty()) {
             sendError("One or more fields are empty", request, response);
+            return;
+        }
+
+        if(!EmailValidator.getInstance().isValid(email)) {
+            sendError("The inserted email is not valid", request, response);
             return;
         }
 

@@ -47,12 +47,6 @@ public class GoToRegistry extends HttpServlet {
         HttpSession session = request.getSession();
         String errorMessage = "";
 
-        if (session.isNew() || session.getAttribute("user") == null) {
-            String loginPath = getServletContext().getContextPath() + "/index.html";
-            response.sendRedirect(loginPath);
-            return;
-        }
-
         if(session.getAttribute("tempMeeting") == null || session.getAttribute("counter") == null || session.getAttribute("userMap") == null){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing some parameters. Are you a maleficent client? /:|");
             return;
@@ -83,7 +77,7 @@ public class GoToRegistry extends HttpServlet {
         templateEngine.process(path, webContext, response.getWriter());
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doGet(request, response);
     }
 }

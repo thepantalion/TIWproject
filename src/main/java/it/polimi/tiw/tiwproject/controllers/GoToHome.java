@@ -41,14 +41,7 @@ public class GoToHome extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String loginPath = getServletContext().getContextPath() + "/index.html";
         HttpSession session = request.getSession();
-
-        if (session.isNew() || session.getAttribute("user") == null) {
-            response.sendRedirect(loginPath);
-            return;
-        }
-
         String errorMessage = "";
 
         if (session.getAttribute("tempMeeting") != null) session.removeAttribute("tempMeeting");

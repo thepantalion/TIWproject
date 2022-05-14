@@ -13,11 +13,11 @@
 
 <div>
     <h3>Meeting details:</h3>
-    <p th:text="'title: ' + ${tempMeeting.title}">sample</p>
-    <p th:text="'date: ' + ${tempMeeting.date.getYear() + 1900} +'-'+${tempMeeting.date.getMonth()}+'-'+${tempMeeting.date.getDay()}">2000-01-01</p>
-    <p th:text="'time: ' + ${tempMeeting.time}">15:30</p>
-    <p th:text="'duration: ' + ${tempMeeting.duration}">90min</p>
-    <p th:text="'maximum number of participants: ' + ${tempMeeting.numberOfParticipants}">14-05-2022</p>
+    <label th:text="'title: ' + ${tempMeeting.title}">sample</label> <br>
+    <label th:text="'date: ' + ${tempMeeting.date.getYear() + 1900} +'-'+${tempMeeting.date.getMonth() + 1}+'-'+${tempMeeting.date.getDate()}">2000-01-01</label> <br>
+    <label th:text="'time: ' + ${tempMeeting.time}">15:30</label> <br>
+    <label th:text="'duration: ' + ${tempMeeting.duration}">90min</label> <br>
+    <label th:text="'maximum number of participants: ' + ${tempMeeting.numberOfParticipants}">14-05-2022</label> <br>
 </div>
 
 <div>
@@ -32,6 +32,7 @@
                 <label th:for="${user.key}" th:text="${user.key}"> test</label>
             </div>
 
+            <br>
             <input type="submit" name="Create Meeting">
         </fieldset>
     </form>

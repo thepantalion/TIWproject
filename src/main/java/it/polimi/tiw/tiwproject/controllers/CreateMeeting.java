@@ -41,17 +41,12 @@ public class CreateMeeting extends HttpServlet {
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doPost(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        if (session.isNew() || session.getAttribute("user") == null) {
-            String loginpath = getServletContext().getContextPath() + "/index.html";
-            response.sendRedirect(loginpath);
-            return;
-        }
 
         if(request.getParameterValues("selectedUsers") == null){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing valid parameters.");
@@ -60,7 +55,7 @@ public class CreateMeeting extends HttpServlet {
         HashMap<String, Pair<User, Boolean>> userMap = (HashMap<String, Pair<User, Boolean>>) session.getAttribute("userMap");
         Meeting tempMeeting = (Meeting) session.getAttribute("tempMeeting");
 
-        ArrayList<String> selectedUsers = new ArrayList<String>(Arrays.asList(request.getParameterValues("selectedUsers")));
+        ArrayList<String> selectedUsers = new ArrayList<>(Arrays.asList(request.getParameterValues("selectedUsers")));
 
         for(String username : userMap.keySet()){
             userMap.get(username).set_2(Boolean.FALSE);
@@ -74,7 +69,7 @@ public class CreateMeeting extends HttpServlet {
 
         session.setAttribute("userMap", userMap);
 
-        if(selectedUsers.size() > tempMeeting.getNumberOfParticipants()-1 || selectedUsers.size() <= 0){
+        if(selectedUsers.size() > tempMeeting.getNumberOfParticipants() - 1 || selectedUsers.size() <= 0){
             int counter = (int) session.getAttribute("counter");
             counter++;
             session.setAttribute("counter", counter);
