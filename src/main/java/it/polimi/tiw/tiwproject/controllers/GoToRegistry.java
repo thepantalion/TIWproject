@@ -45,6 +45,7 @@ public class GoToRegistry extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = (User) request.getSession().getAttribute("user");
         HttpSession session = request.getSession();
+        String errorMessage = "";
 
         if (session.isNew() || session.getAttribute("user") == null) {
             String loginPath = getServletContext().getContextPath() + "/index.html";
@@ -55,6 +56,11 @@ public class GoToRegistry extends HttpServlet {
         if(session.getAttribute("tempMeeting") == null || session.getAttribute("counter") == null || session.getAttribute("userMap") == null){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing some parameters. Are you a maleficent client? /:|");
             return;
+        }
+
+        if (session.getAttribute("errorMessage") != null) {
+            errorMessage = (String) session.getAttribute("errorMessage");
+            session.removeAttribute("errorMessage");
         }
 
         UserDAO userDAO = new UserDAO(connection);
@@ -73,6 +79,7 @@ public class GoToRegistry extends HttpServlet {
         final WebContext webContext = new WebContext(request, response, servletContext, request.getLocale());
         webContext.setVariable("userMap", userMap);
         webContext.setVariable("tempMeeting", tempMeeting);
+        webContext.setVariable("meetingFormError", errorMessage);
         templateEngine.process(path, webContext, response.getWriter());
     }
 

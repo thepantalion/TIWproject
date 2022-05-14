@@ -47,25 +47,24 @@ public class UserDAO {
 
     public HashMap<String, Pair<User, Boolean>> addNewUsers(User creator, HashMap<String, Pair<User, Boolean>> userMap) throws SQLException {
         String query = "SELECT idUser, username, email FROM db_tiw_project.user WHERE username <> ?";
-        HashMap<String, Pair<User, Boolean>> userList = new HashMap<>(userMap);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, creator.getUsername());
 
             try (ResultSet result = preparedStatement.executeQuery()){
                 while(result.next()){
-                    if(!userList.containsKey(result.getString("username"))) {
+                    if(!userMap.containsKey(result.getString("username"))) {
                         User user = new User();
                         user.setId(result.getInt("idUser"));
                         user.setUsername(result.getString("username"));
                         user.setEmail(result.getString("email"));
 
-                        userList.put(result.getString("username"), new Pair<>(user, Boolean.FALSE));
+                        userMap.put(result.getString("username"), new Pair<>(user, Boolean.FALSE));
                     }
                 }
             }
         }
 
-        return userList;
+        return userMap;
     }
 }

@@ -21,16 +21,17 @@
 </div>
 
 <div>
-    <p th:text = "'Please select up to ' + ${tempMeeting.getNumberOfParticipants()} + ' users.'"></p>
+    <p th:text = "'Please select up to ' + ${tempMeeting.getNumberOfParticipants()-1} + ' users.'"></p>
     <!-- stampa il numero di utenti da selezionare, se sono troppi, mostra quanti ne deve togliere -->
     <form action="#" th:action="@{/CreateMeeting}" method="POST">
         <fieldset>
+            <p th:text=" ${meetingFormError}"></p>
+
             <div th:each="user : ${userMap}">
-                <input type="checkbox" th:name="${user.key}" th:value="${user.key}" th:checked="${userMap.get(user.key).get_2()}"/> <!-- th:checked="" -->
+                <input type="checkbox" th:name="selectedUsers" th:value="${user.key}" th:checked="${userMap.get(user.key).get_2()}"/> <!-- th:checked="" -->
                 <label th:for="${user.key}" th:text="${user.key}"> test</label>
             </div>
 
-            <!-- <p th:text=" ${meetingFormError}"></p> -->
             <input type="submit" name="Create Meeting">
         </fieldset>
     </form>
