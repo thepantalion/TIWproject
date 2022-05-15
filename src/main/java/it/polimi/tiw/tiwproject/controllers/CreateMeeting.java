@@ -80,8 +80,11 @@ public class CreateMeeting extends HttpServlet {
             if(counter <= 2){
                 session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size()- tempMeeting.getNumberOfParticipants()+1) + " users.");
                 response.sendRedirect(getServletContext().getContextPath() + "/Registry");
+                return;
+            } else {
+                response.sendRedirect(getServletContext().getContextPath() + "/Undo");
+                return;
             }
-            else response.sendRedirect(getServletContext().getContextPath() + "/Undo");
         }
 
         try{
@@ -90,6 +93,7 @@ public class CreateMeeting extends HttpServlet {
         } catch (Exception exception) {
             exception.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "There was a problem with the database. :(");
+            return;
         }
 
         response.sendRedirect(getServletContext().getContextPath() + "/Home");
