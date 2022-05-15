@@ -46,7 +46,7 @@ public class GoToHome extends HttpServlet {
 
         if (session.getAttribute("tempMeeting") != null) session.removeAttribute("tempMeeting");
         if (session.getAttribute("counter") != null) session.removeAttribute("counter");
-        if (session.getAttribute("userList") != null) session.removeAttribute("userList");
+        if (session.getAttribute("userMap") != null) session.removeAttribute("userMap");
         if (session.getAttribute("errorMessage") != null) {
             errorMessage = (String) session.getAttribute("errorMessage");
             session.removeAttribute("errorMessage");

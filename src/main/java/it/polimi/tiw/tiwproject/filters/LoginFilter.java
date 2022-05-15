@@ -17,9 +17,7 @@ public class LoginFilter implements Filter {
         Filter.super.init(filterConfig);
     }
 
-    @Override public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
+    @Override public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String loginPath = httpServletRequest.getServletContext().getContextPath() + "/index.html";

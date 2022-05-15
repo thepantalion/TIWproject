@@ -2,6 +2,7 @@ package it.polimi.tiw.tiwproject.controllers;
 
 import it.polimi.tiw.tiwproject.beans.Meeting;
 import it.polimi.tiw.tiwproject.beans.User;
+import it.polimi.tiw.tiwproject.dao.MeetingDAO;
 import it.polimi.tiw.tiwproject.utilities.ConnectionHandler;
 import it.polimi.tiw.tiwproject.utilities.Pair;
 import org.thymeleaf.TemplateEngine;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,8 +54,9 @@ public class CreateMeeting extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing valid parameters.");
         }
 
-        HashMap<String, Pair<User, Boolean>> userMap = (HashMap<String, Pair<User, Boolean>>) session.getAttribute("userMap");
+        User user = (User) session.getAttribute("user");
         Meeting tempMeeting = (Meeting) session.getAttribute("tempMeeting");
+        HashMap<String, Pair<User, Boolean>> userMap = (HashMap<String, Pair<User, Boolean>>) session.getAttribute("userMap");
 
         ArrayList<String> selectedUsers = new ArrayList<>(Arrays.asList(request.getParameterValues("selectedUsers")));
 
@@ -80,5 +83,15 @@ public class CreateMeeting extends HttpServlet {
             }
             else response.sendRedirect(getServletContext().getContextPath() + "/Undo");
         }
+
+        try{
+            MeetingDAO meetingDAO = new MeetingDAO(connection);
+            meetingDAO.createMeeting(user, tempMeeting, userMap);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "There was a problem with the database. :(");
+        }
+
+        response.sendRedirect(getServletContext().getContextPath() + "/Home");
     }
 }

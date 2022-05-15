@@ -2,12 +2,12 @@ package it.polimi.tiw.tiwproject.dao;
 
 import it.polimi.tiw.tiwproject.beans.Meeting;
 import it.polimi.tiw.tiwproject.beans.User;
+import it.polimi.tiw.tiwproject.utilities.Pair;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MeetingDAO {
     private final Connection connection;
@@ -67,6 +67,58 @@ public class MeetingDAO {
         }
 
         return meetingList;
+    }
+
+    public void createMeeting(User creator, Meeting meeting, HashMap<String, Pair<User, Boolean>> userMap) throws SQLException {
+        ArrayList<User> userList = new ArrayList<>();
+        userList.add(creator);
+        int meetingID;
+
+        for(String username : userMap.keySet()) {
+            if(userMap.get(username).get_2() == Boolean.TRUE) userList.add(userMap.get(username).get_1());
+        }
+
+        String meetingQuery = "INSERT into db_tiw_project.meeting (title, date, time, duration, maxNumOfParticipants, idCreator) VALUES (?,?,?,?,?,?)";
+        PreparedStatement meetingPreparedStatement = null;
+
+        String inviteeQuery = "INSERT into db_tiw_project.invited (idUser, idMeeting) VALUES(?,?)";
+        PreparedStatement inviteePreparedStatement = null;
+
+        try {
+            connection.setAutoCommit(false);
+
+            meetingPreparedStatement = connection.prepareStatement(meetingQuery, Statement.RETURN_GENERATED_KEYS);
+            meetingPreparedStatement.setString(1, meeting.getTitle());
+            meetingPreparedStatement.setObject(2, meeting.getDate().toInstant().atZone(ZoneId.of("Europe/Rome")).toLocalDate());
+            meetingPreparedStatement.setTime(3, meeting.getTime());
+            meetingPreparedStatement.setInt(4, meeting.getDuration());
+            meetingPreparedStatement.setInt(5, meeting.getNumberOfParticipants());
+            meetingPreparedStatement.setInt(6, creator.getId());
+
+            int result = meetingPreparedStatement.executeUpdate();
+            if(result != 1) throw new SQLException();
+
+            ResultSet resultSet = meetingPreparedStatement.getGeneratedKeys();
+            if(resultSet.next()) {
+                meetingID = resultSet.getInt(1);
+
+                inviteePreparedStatement = connection.prepareStatement(inviteeQuery);
+                inviteePreparedStatement.setInt(2, meetingID);
+                for (User user : userList) {
+                    inviteePreparedStatement.setInt(1, user.getId());
+
+                    result = inviteePreparedStatement.executeUpdate();
+                    if(result != 1) throw new SQLException();
+                }
+            } else throw new SQLException();
+        } catch (Exception exception) {
+            connection.rollback();
+            throw new SQLException(exception);
+        } finally {
+            connection.setAutoCommit(true);
+            if(meetingPreparedStatement != null) meetingPreparedStatement.close();
+            if(inviteePreparedStatement != null) inviteePreparedStatement.close();
+        }
     }
 
 }
