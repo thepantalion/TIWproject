@@ -37,7 +37,6 @@ public class GoToHome extends HttpServlet {
         this.templateEngine = new TemplateEngine();
         this.templateEngine.setTemplateResolver(templateResolver);
         templateResolver.setSuffix(".html");
-        connection = ConnectionHandler.getConnection(getServletContext());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,7 +61,6 @@ public class GoToHome extends HttpServlet {
             meetingsInvited = meetingDAO.meetingsInvited(user);
         } catch (SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover meeting");
-            e.printStackTrace();
             return;
         }
 

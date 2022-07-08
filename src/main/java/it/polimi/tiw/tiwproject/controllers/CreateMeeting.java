@@ -78,20 +78,19 @@ public class CreateMeeting extends HttpServlet {
             session.setAttribute("counter", counter);
 
             if(counter <= 2){
-                session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size()- tempMeeting.getNumberOfParticipants()+1) + " users.");
+                session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size() - tempMeeting.getNumberOfParticipants() + 1) + " users.");
                 response.sendRedirect(getServletContext().getContextPath() + "/Registry");
-                return;
             } else {
                 response.sendRedirect(getServletContext().getContextPath() + "/Undo");
-                return;
             }
+
+            return;
         }
 
         try{
             MeetingDAO meetingDAO = new MeetingDAO(connection);
             meetingDAO.createMeeting(user, tempMeeting, userMap);
         } catch (Exception exception) {
-            exception.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "There was a problem with the database. :(");
             return;
         }

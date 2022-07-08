@@ -63,23 +63,11 @@
         <p>Use the form below to create a meeting</p>
         <form action="#" th:action="@{/NewMeeting}" method="POST">
             <fieldset>
-                <p>
-                    Title: <input type="text" name="title" required />
-                </p>
-                <p>
-                    Date: <input type="date" name="date"
-                                 th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
-                                 placeholder="yyyy-mm-dd" required />
-                </p>
-                <p>
-                    Start time: <input type="time" id="time" name="time" required>
-                </p>
-                <p>
-                    Duration (in minutes): <input type="number" name="duration" min=1 required />
-                </p>
-                <p>
-                    Number of participants: <input type="number" name="numberOfParticipants" min=2 required />
-                </p>
+                Title: <input type="text" name="title" required /> <br>
+                Date: <input type="date" name="date" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="yyyy-mm-dd" required /> <br>
+                Start time: <input type="time" id="time" name="time" required> <br>
+                Duration (in minutes): <input type="number" name="duration" min=1 required /> <br>
+                Number of participants: <input type="number" name="numberOfParticipants" min=2 required /> <br>
 
                 <p th:text=" ${meetingFormError}"></p>
                 <input type="submit" name="Create Meeting">

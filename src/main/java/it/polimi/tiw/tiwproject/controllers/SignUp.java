@@ -81,7 +81,7 @@ public class SignUp extends HttpServlet {
         } catch (SQLException e) {
             if (e.getMessage().contains("Duplicate"))
                 sendError("The specified username and/or email is already registered", request, response);
-            else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            else response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The database couldn't keep up with you /:(");
         }
 
         String path = getServletContext().getContextPath() + "/index.html";
