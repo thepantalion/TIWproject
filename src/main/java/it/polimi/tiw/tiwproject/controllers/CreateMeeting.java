@@ -49,35 +49,41 @@ public class CreateMeeting extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
+        boolean noSelection = false;
 
-        if(request.getParameterValues("selectedUsers") == null){
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing valid parameters.");
-        }
+        if(request.getParameterValues("selectedUsers") == null) noSelection = true;
 
         User user = (User) session.getAttribute("user");
         Meeting tempMeeting = (Meeting) session.getAttribute("tempMeeting");
         HashMap<String, Pair<User, Boolean>> userMap = (HashMap<String, Pair<User, Boolean>>) session.getAttribute("userMap");
 
-        ArrayList<String> selectedUsers = new ArrayList<>(Arrays.asList(request.getParameterValues("selectedUsers")));
+        ArrayList<String> selectedUsers;
+        if(!noSelection) {
+            selectedUsers = new ArrayList<>(Arrays.asList(request.getParameterValues("selectedUsers")));
 
-        for(String username : userMap.keySet()){
-            userMap.get(username).set_2(Boolean.FALSE);
-        }
-
-        for(String username : selectedUsers){
-            if(userMap.containsKey(username)){
-                userMap.get(username).set_2(Boolean.TRUE);
+            for (String username : userMap.keySet()) {
+                userMap.get(username).set_2(Boolean.FALSE);
             }
-        }
 
-        session.setAttribute("userMap", userMap);
+            for (String username : selectedUsers) {
+                if (userMap.containsKey(username)) {
+                    userMap.get(username).set_2(Boolean.TRUE);
+                }
+            }
+
+            session.setAttribute("userMap", userMap);
+        } else selectedUsers = new ArrayList<>();
 
         if(selectedUsers.size() > tempMeeting.getNumberOfParticipants() - 1 || selectedUsers.size() <= 0){
             int counter = (int) session.getAttribute("counter");
             counter++;
             session.setAttribute("counter", counter);
 
-            if(counter <= 2){
+            if(noSelection) {
+                session.setAttribute("errorMessage", "You didn't select any user. Please do so.");
+                response.sendRedirect(getServletContext().getContextPath() + "/Registry");
+            }
+            else if(counter <= 2){
                 session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size() - tempMeeting.getNumberOfParticipants() + 1) + " users.");
                 response.sendRedirect(getServletContext().getContextPath() + "/Registry");
             } else {
