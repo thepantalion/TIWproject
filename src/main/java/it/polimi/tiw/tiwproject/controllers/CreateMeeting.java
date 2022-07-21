@@ -79,13 +79,14 @@ public class CreateMeeting extends HttpServlet {
             counter++;
             session.setAttribute("counter", counter);
 
-            if(noSelection) {
-                session.setAttribute("errorMessage", "You didn't select any user. Please do so.");
-                response.sendRedirect(getServletContext().getContextPath() + "/Registry");
-            }
-            else if(counter <= 2){
-                session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size() - tempMeeting.getNumberOfParticipants() + 1) + " users.");
-                response.sendRedirect(getServletContext().getContextPath() + "/Registry");
+            if(counter <= 2){
+                if(noSelection) {
+                    session.setAttribute("errorMessage", "You didn't select any user. Please do so. (available attempts: " + (3 - counter) + ")");
+                    response.sendRedirect(getServletContext().getContextPath() + "/Registry");
+                } else {
+                    session.setAttribute("errorMessage", "You selected too many users. Please unselect at least " + (selectedUsers.size() - tempMeeting.getNumberOfParticipants() + 1) + " users. (available attempts: " + (3 - counter) + ")");
+                    response.sendRedirect(getServletContext().getContextPath() + "/Registry");
+                }
             } else {
                 response.sendRedirect(getServletContext().getContextPath() + "/Undo");
             }
