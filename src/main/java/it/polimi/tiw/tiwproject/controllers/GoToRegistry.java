@@ -43,8 +43,8 @@ public class GoToRegistry extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = (User) request.getSession().getAttribute("user");
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         String errorMessage = "";
 
         if(session.getAttribute("tempMeeting") == null || session.getAttribute("counter") == null || session.getAttribute("userMap") == null){
