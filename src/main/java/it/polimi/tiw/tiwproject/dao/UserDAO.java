@@ -16,7 +16,7 @@ public class UserDAO {
     }
 
     public User checkCredentials(String username, String password) throws SQLException {
-        String query = "SELECT  idUser, username, email FROM db_tiw_project.user WHERE username = ? AND password = ?";
+        String query = "SELECT  idUser, username FROM db_tiw_project.user WHERE username = ? AND password = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
@@ -28,7 +28,6 @@ public class UserDAO {
                     User user = new User();
                     user.setId(result.getInt("idUser"));
                     user.setUsername(result.getString("username"));
-                    user.setEmail(result.getString("email"));
                     return user;
                 }
             }
@@ -46,7 +45,7 @@ public class UserDAO {
     }
 
     public HashMap<String, Pair<User, Boolean>> addNewUsers(User creator, HashMap<String, Pair<User, Boolean>> userMap) throws SQLException {
-        String query = "SELECT idUser, username, email FROM db_tiw_project.user WHERE username <> ?";
+        String query = "SELECT idUser, username FROM db_tiw_project.user WHERE username <> ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, creator.getUsername());
@@ -57,7 +56,6 @@ public class UserDAO {
                         User user = new User();
                         user.setId(result.getInt("idUser"));
                         user.setUsername(result.getString("username"));
-                        user.setEmail(result.getString("email"));
 
                         userMap.put(result.getString("username"), new Pair<>(user, Boolean.FALSE));
                     }
